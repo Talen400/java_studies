@@ -1,3 +1,5 @@
+package handler
+
 import java.util.Scanner;
 
 public class InputReader {
