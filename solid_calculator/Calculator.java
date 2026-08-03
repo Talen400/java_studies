@@ -1,6 +1,6 @@
 import operations.Operation;
 import handler.InputReader;
-import handler.Result.Printer;
+import handler.ResultPrinter;
 import factory_inversion.OperationFactory;
 
 
@@ -12,7 +12,7 @@ public class Calculator {
 
 		System.out.println("--- Java Terminal Calculator ---");
 		double num1 = reader.readNumber("Enter first number: ");
-		char opSymbol = reader.readOperator("Enter second number: ");
+		char opSymbol = reader.readOperator("Operation symboo: ");
 		double num2 = reader.readNumber("Enter second number: ");
 
 		try {
@@ -20,9 +20,10 @@ public class Calculator {
 			double result = operation.apply(num1, num2);
 			printer.printResult(num1, opSymbol, num2, result);
 		} catch (IllegalArgumentException | ArithmeticException e) {
-			printer.printError(e.getMessage);
+			printer.printError(e.getMessage());
 		} finally {
 			reader.close();
 		}
-
+	}
 }
+

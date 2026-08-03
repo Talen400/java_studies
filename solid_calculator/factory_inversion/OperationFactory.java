@@ -1,21 +1,21 @@
-package factory_inversion
+package factory_inversion;
 
-import package operations.Operation;
-import package operations.Addition;
-import package operations.Subtraction;
-import package operations.Multiplication;
-import package operations.Division;
+import operations.Operation;
+import operations.Addition;
+import operations.Subtraction;
+import operations.Multiply;
+import operations.Division;
 
 public class OperationFactory {
-	public static Operation fromSysbol(char symbol) {
+	public static Operation fromSymbol(char symbol) {
 		switch (symbol) {
-			case "+":
+			case '+':
 				return new Addition();
-			case "-":
+			case '-':
 				return new Subtraction();
-			case "*":
+			case '*':
 				return new Multiply();
-			case "/":
+			case '/':
 				return new Division();
 			default:
 				throw new IllegalArgumentException("Invalid symbol math.");

@@ -1,0 +1,145 @@
+package factory_inversion;
+
+import operations.Operation;
+import operations.Addition;
+import operations.Subtraction;
+import operations.Multiply;
+import operations.Division;
+
+public class OperationFactory {
+	public static Operation fromSymbol(char symbol) {
+		switch (symbol) {
+			case '+':
+				return new Addition();
+			case '-':
+				return new Subtraction();
+			case '*':
+				return new Multiply();
+			case '/':
+				return new Division();
+			default:
+				throw new IllegalArgumentException("Invalid symbol math.");
+		}
+	}
+
+}
+package operations;
+
+public class Multiply implements Operation {
+	public double apply(double a, double b) { return a * b; }
+	public char symbol() { return '*'; }
+}
+package operations;
+
+public interface Operation {
+	double apply(double a, double b);
+	char symbol();
+}
+
+package operations;
+
+public class Addition implements Operation {
+	public double apply(double a, double b) { return a + b; }
+	public char symbol() { return '+'; }
+}
+package operations;
+
+public class Subtraction implements Operation {
+	public double apply(double a, double b) { return a - b; }
+	public char symbol() { return '-'; }
+}
+package operations;
+
+public class Division implements Operation {
+	public double apply(double a, double b) { 
+		if (b == 0)
+			throw new ArithmeticException("Division by zero is undefined");
+		return a / b; }
+	public char symbol() { return '/'; }
+}
+import operations.Operation;
+import handler.InputReader;
+import handler.ResultPrinter;
+import factory_inversion.OperationFactory;
+
+
+public class Calculator {
+	public static void main(String[]  args) {
+	
+		InputReader reader = new InputReader();
+		ResultPrinter printer = new ResultPrinter();
+
+		System.out.println("--- Java Terminal Calculator ---");
+		double num1 = reader.readNumber("Enter first number: ");
+		char opSymbol = reader.readOperator("Operation symboo: ");
+		double num2 = reader.readNumber("Enter second number: ");
+
+		try {
+			Operation operation = OperationFactory.fromSymbol(opSymbol);
+			double result = operation.apply(num1, num2);
+			printer.printResult(num1, opSymbol, num2, result);
+		} catch (IllegalArgumentException | ArithmeticException e) {
+			printer.printError(e.getMessage());
+		} finally {
+			reader.close();
+		}
+	}
+}
+
+package handler;
+
+import java.util.Scanner;
+
+public class InputReader {
+	private final Scanner scanner = new Scanner(System.in);
+
+	public double readNumber(String prompt) {
+		System.out.print(prompt);
+		return scanner.nextDouble();
+	}
+
+	public char readOperator(String prompt) {
+		System.out.print(prompt);
+		return scanner.next().charAt(0);
+	}
+
+	public void close() {
+		scanner.close();
+	}
+
+}
+package handler;
+
+public class ResultPrinter {
+	public void printResult(double a, char op, double b, double result) {
+		System.out.println("Result: " + a + " " + op + " " + b + " = " + result);
+	}
+
+	public void printError(String message) {
+		System.out.println("Error: " + message);
+	}
+}
+JC := javac
+JAVA := java
+
+MAIN := Calculator
+
+OUT := classes
+
+SRCS := $(shell find . -name "*.java")
+
+all:
+	$(JC) -d $(OUT) $(SRCS)
+
+run: all
+	$(JAVA) -cp $(OUT) $(MAIN)
+
+clean:
+	rm -rf $(OUT)
+
+fclean: clean
+	rm -rf $(MAIN)
+
+re: fclean all
+
+.PHONY: all run clean fclean re
